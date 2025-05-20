@@ -1,0 +1,9 @@
+*.docx
+*.prt
+*.3mf
+*.tmp
+
+node_modules
+
+arduino_secrets.h
+*.output.csv
