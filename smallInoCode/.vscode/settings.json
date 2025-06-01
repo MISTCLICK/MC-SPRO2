@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "ADCLibrary.C": "cpp",
+        "interrupt.h": "c",
+        "usart.h": "c",
+        "io.h": "c",
+        "adclibrary.h": "c",
+        "nikos_usart.h": "c",
+        "*.off": "c"
+    }
+}

@@ -24,9 +24,12 @@ char ssid[] = SECRET_SSID;        // your network SSID (name)
 char pass[] = SECRET_PASS;    // your network password (use for WPA, or use as key for WEP)
 int status = WL_IDLE_STATUS;     // the WiFi radio's status
 
+volatile int RPM, ANGLE, TIME;
+volatile bool dataReady = false;
+
 void setup() {
   //Initialize serial and wait for port to open:
-  Serial.begin(9600);
+  Serial.begin(57600);
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB port only
   }
@@ -61,12 +64,14 @@ void setup() {
 
   // Join the I2C bus as a slave device.
   Wire.begin(0x69);
-  Wire.onRequest(onMasterData);
+  Wire.onReceive(onMasterData);
 }
 
 void loop() {
-  // sendHttpRequest("/", "?q=your%20mother&number=69");
-  // delay(5000);
+  if (dataReady){
+    sendHttpRequest("/data/bus", "?time=" + String(TIME) + "&angle=" + String(ANGLE) + "&speed=" + String(RPM));
+    dataReady = false;
+  } 
 }
 
 void sendHttpRequest(String PATH_NAME, String QUERY) {
@@ -107,7 +112,9 @@ void sendHttpRequest(String PATH_NAME, String QUERY) {
 void onMasterData(int numBytes) {
   int n = 0;
 
-  while (Wire.available()) {
+  //Serial.println("Hello World!");
+
+  while (Wire.available() && n < 6) {
     data_bus[n] = Wire.read();
     n++;
     //RPM HI/LO    
@@ -115,11 +122,11 @@ void onMasterData(int numBytes) {
     //TIME HI/LO * 5ms
   }
 
-  int RPM = data_bus[0] << 8 + data_bus[1];
-  int ANGLE = data_bus[2] << 8 + data_bus[3];
-  int TIME = (data_bus[4] << 8 + data_bus[5]) / 5;
+  RPM = (data_bus[0] << 8) + data_bus[1];
+  ANGLE = (data_bus[2] << 8) + data_bus[3];
+  TIME = ((data_bus[4] << 8) + data_bus[5]) / 5;
 
-  sendHttpRequest("/data/bus", "?time=" + String(TIME) + "&angle=" + String(ANGLE) + "&speed=" + String(RPM));
+  dataReady = true;
 }
 
 void printWifiData() {

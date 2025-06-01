@@ -1,0 +1,36 @@
+
+#include <stdio.h>
+#include <avr/io.h>
+
+void enableADC(void);
+void disableADC(void);
+void ADC_init(void);
+void analogCompare_init(void);
+uint16_t ADC_read(void);
+
+void ADC_init(void){
+  ADMUX  = (1 << REFS0) | (1 & 0x0F); // AVcc ref, channel select, change channel later
+  ADCSRA = (1 << ADEN)  | (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0); // enable + prescaler 128
+  disableADC(); //disable for now, enable when program starts
+}
+
+void analogCompare_init(void){
+  DDRD &= ~((1<<PD6) | (1<<PD7));
+  ACSR = (1 << ACIE) | (1 << ACIS1) | (1 << ACIS0); //compares on rising edge
+}
+
+void enableADC(void){
+  ADCSRA |= (1 << ADEN); //turns on ADC (analog reading)
+}
+
+void disableADC(void){
+  ADCSRA &= ~(1<<ADEN); //turn off ADC
+}
+
+
+uint16_t ADC_read(void){
+  ADCSRA |= (1 << ADSC); //Start conversion
+  while ( (ADCSRA & (1<<ADSC)) ); //wait for conversion to be done
+  uint16_t result = ADC; //get result
+  return result; //return result
+}
