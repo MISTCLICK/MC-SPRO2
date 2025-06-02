@@ -11,6 +11,10 @@
   Find the full UNO R4 WiFi Network documentation here:
   https://docs.arduino.cc/tutorials/uno-r4-wifi/wifi-examples#connect-with-wpa
  */
+
+/*
+  This file has been modified to suit the needs of SPRO2-MC at the University of Southern Denmark by BSc Group 3
+*/
 #include <WiFiS3.h>
 #include <Wire.h>
 #include <string>
