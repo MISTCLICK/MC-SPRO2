@@ -128,7 +128,7 @@ void onMasterData(int numBytes) {
 
   RPM = (data_bus[0] << 8) + data_bus[1];
   ANGLE = (data_bus[2] << 8) + data_bus[3];
-  TIME = ((data_bus[4] << 8) + data_bus[5]) / 5;
+  TIME = ((data_bus[4] << 8) + data_bus[5]) * 5;
 
   dataReady = true;
 }
